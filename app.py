@@ -199,8 +199,9 @@ def render_projects():
 # ---------- Resume ----------
 def render_resume():
     import os, base64
+    from streamlit.components.v1 import html
     st.header("Resume / CV")
-    st.write("Get a detailed look at my professional experience:")
+    st.write("Keep your resume here for quick access during interviews.")
 
     # Path to local CV file
     cv_path = "assets/Emanuel_Gomes_CV.pdf"
@@ -221,13 +222,14 @@ def render_resume():
             mime="application/pdf"
         )
 
-        # Inline preview (iframe using base64 encoding)
-        b64 = base64.b64encode(cv_bytes).decode()
-        st.markdown(
-            f'<iframe src="data:application/pdf;base64,{b64}" width="100%" height="720"></iframe>',
-            unsafe_allow_html=True,
-        )
-        st.caption("Preview generated from local assets/Emanuel_Gomes_CV.pdf.")
+        # Inline preview using <object>/<iframe> (more compatible than base64)
+        html(f"""
+          <object data="{cv_path}" type="application/pdf" width="100%" height="720">
+            <iframe src="{cv_path}" width="100%" height="720"></iframe>
+            <p>Can't display the PDF here. <a href="{cv_path}" target="_blank" rel="noopener noreferrer">Open it in a new tab</a>.</p>
+          </object>
+        """, height=740)
+        st.caption("Preview served from assets/Emanuel_Gomes_CV.pdf.")
     else:
         st.warning("Local CV not found at assets/Emanuel_Gomes_CV.pdf. Please add the file or use the public link below.")
 
@@ -260,6 +262,7 @@ def render_resume():
         • Streamlit  
         • Geospatial (GeoPandas)
         """)
+
    
 # ---------- Contact ----------
 def render_contact():
