@@ -223,16 +223,19 @@ def render_resume():
     else:
         st.warning("Local CV not found at assets/Emanuel_Gomes_CV.pdf. Please add the file or use the public link below.")
 
-    # Inline preview using public link (better browser compatibility)
+    # Inline preview using PDF.js viewer (prevents auto-download)
+    from urllib.parse import quote
+
     if resume_url:
+        viewer = f"https://mozilla.github.io/pdf.js/web/viewer.html?file={quote(resume_url, safe='')}"
         st.markdown(
             f"""
-            <iframe src="{resume_url}" width="100%" height="900" style="border:none;">
-            </iframe>
+            <iframe src="{viewer}" width="100%" height="900" style="border:none;"></iframe>
             """,
             unsafe_allow_html=True
         )
-        st.caption("Preview generated from public GitHub link.")
+        st.caption("Preview rendered via PDF.js viewer.")
+
 
     # --- Skills & Certs ---
     st.subheader("Skills & certs")
