@@ -198,8 +198,7 @@ def render_projects():
 
 # ---------- Resume ----------
 def render_resume():
-    import os, base64
-    from streamlit.components.v1 import html
+    import os
     st.header("Resume / CV")
     st.write("Keep your resume here for quick access during interviews.")
 
@@ -209,7 +208,7 @@ def render_resume():
     # Public CV link (fallback or external viewing)
     resume_url = "https://raw.githubusercontent.com/E-man85/portfolio_streamlit/main/assets/Emanuel_Gomes_CV.pdf"
 
-    # Show preview and download if file exists locally
+    # Show download button if file exists locally
     if os.path.exists(cv_path):
         with open(cv_path, "rb") as f:
             cv_bytes = f.read()
@@ -221,19 +220,19 @@ def render_resume():
             file_name="Emanuel_Gomes_CV.pdf",
             mime="application/pdf"
         )
-
-        # Inline preview via PDF.js viewer using a public URL (most compatible)
-        from urllib.parse import quote
-        public_pdf = resume_url  # make sure this URL is publicly accessible
-        viewer = f"https://mozilla.github.io/pdf.js/web/viewer.html?file={quote(public_pdf, safe='')}"
-        html(f"<iframe src='{viewer}' width='100%' height='720' style='border:none;'></iframe>", height=740)
-        st.caption("Preview rendered via PDF.js (using the public resume URL). If it doesn't load, use the download button or open in a new tab above.")
     else:
         st.warning("Local CV not found at assets/Emanuel_Gomes_CV.pdf. Please add the file or use the public link below.")
 
-    # Public link option to CV
+    # Inline preview using public link (better browser compatibility)
     if resume_url:
-        st.markdown(f"[📄 Open CV in browser]({resume_url})")
+        st.markdown(
+            f"""
+            <iframe src="{resume_url}" width="100%" height="900" style="border:none;">
+            </iframe>
+            """,
+            unsafe_allow_html=True
+        )
+        st.caption("Preview generated from public GitHub link.")
 
     # --- Skills & Certs ---
     st.subheader("Skills & certs")
