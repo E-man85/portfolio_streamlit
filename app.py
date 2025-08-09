@@ -222,14 +222,12 @@ def render_resume():
             mime="application/pdf"
         )
 
-        # Inline preview using <object>/<iframe> (more compatible than base64)
-        html(f"""
-          <object data="{cv_path}" type="application/pdf" width="100%" height="720">
-            <iframe src="{cv_path}" width="100%" height="720"></iframe>
-            <p>Can't display the PDF here. <a href="{cv_path}" target="_blank" rel="noopener noreferrer">Open it in a new tab</a>.</p>
-          </object>
-        """, height=740)
-        st.caption("Preview served from assets/Emanuel_Gomes_CV.pdf.")
+        # Inline preview via PDF.js viewer using a public URL (most compatible)
+        from urllib.parse import quote
+        public_pdf = resume_url  # make sure this URL is publicly accessible
+        viewer = f"https://mozilla.github.io/pdf.js/web/viewer.html?file={quote(public_pdf, safe='')}"
+        html(f"<iframe src='{viewer}' width='100%' height='720' style='border:none;'></iframe>", height=740)
+        st.caption("Preview rendered via PDF.js (using the public resume URL). If it doesn't load, use the download button or open in a new tab above.")
     else:
         st.warning("Local CV not found at assets/Emanuel_Gomes_CV.pdf. Please add the file or use the public link below.")
 
